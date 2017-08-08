@@ -1,95 +1,74 @@
 <!doctype html>
 <html lang="{{ app()->getLocale() }}">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+    <title>No Longer Tracking Time</title>
 
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+    <main class="container">
+        <h1>no longer making time - <a href="https://youtu.be/CMSAELTTgrk" target="_blank" rel="noopener">Slowdive</a></h1>
+        <hr>
+        <table>
+            <thead>
+                <tr>
+                    <th>Client</th>
+                    <th>Rate</th>
+                    <th>Time</th>
+                    <th>Owed</th>
+                    {{-- <th>Received</th> --}}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    @foreach ($invoices as $invoice)
+                    <td>{{ $invoice->client }}</td>
+                    <td>&#36;{{ $invoice->rate }}</td>
+                    <td><abbr title="{{ $invoice->startDateTime->toDateTimeString() }} &rarr; {{ $invoice->endDateTime->toDateTimeString() }}">
+                        {{ $invoice->hours }} hours
+                    </abbr></td>
+                    <td>&#36;{{ $invoice->owed }}</td>
+                    @endforeach
+                    {{-- <td><form action=""><input type="checkbox" name="paid" id="paid"></form></td> --}}
+                </tr>
+            </tbody>
+        </table>
 
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Raleway', sans-serif;
-                font-weight: 100;
-                height: 100vh;
-                margin: 0;
-            }
-
-            .full-height {
-                height: 100vh;
-            }
-
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
-
-            .position-ref {
-                position: relative;
-            }
-
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
-
-            .content {
-                text-align: center;
-            }
-
-            .title {
-                font-size: 84px;
-            }
-
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 12px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
-
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
-                        <a href="{{ route('register') }}">Register</a>
-                    @endauth
+        <hr>
+        <form action="" method="POST">
+            <fieldset>
+                <legend>Add Hours</legend>
+                <div>
+                    <label for="client">Client:</label>
+                    <input id="client" name="client" type="text" required>
                 </div>
-            @endif
+                <div>
+                    <label for="rate">Rate:</label>
+                    <input id="rate" name="rate" type="number" min="1" required>
+                </div>
+                {{-- <div>
+                    <label for="hours">hours:</label>
+                    <input id="hours" name="hours" type="number" min="1" required>
+                </div> --}}
 
-            <div class="content">
-                <div class="title m-b-md">
-                    Laravel
+                <div>
+                    <label for="startTime">Start/End Datetime:</label>
+                    <input id="startTime" name="startDateTime" type="datetime-local" value="{{ date('Y-m-d\T00:00') }}" required>
+                    &mdash;
+                    <input id="endTime" name="endDateTime" type="datetime-local" value="{{ date('Y-m-d\T00:00') }}" required>
                 </div>
 
-                <div class="links">
-                    <a href="https://laravel.com/docs">Documentation</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
-                </div>
-            </div>
-        </div>
-    </body>
+                <button type="submit">Add</button>
+                <button type="reset">Reset</button>
+            </fieldset>
+        </form>
+    </main>
+
+    <script></script>
+</body>
 </html>
