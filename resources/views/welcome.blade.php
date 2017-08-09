@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>No Longer Tracking Time</title>
 
@@ -40,13 +41,22 @@
         </table>
 
         <hr>
-        <form action="" method="POST">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        <form id="hoursForm">
             <fieldset>
                 <legend>Add Hours</legend>
                 <div>
                     <label for="client">Client:</label>
                     <input id="client" name="client" type="text" required>
-                </div>
+            </div>
                 <div>
                     <label for="rate">Rate:</label>
                     <input id="rate" name="rate" type="number" min="1" required>
@@ -58,9 +68,9 @@
 
                 <div>
                     <label for="startTime">Start/End Datetime:</label>
-                    <input id="startTime" name="startDateTime" type="datetime-local" value="{{ date('Y-m-d\T00:00') }}" required>
+                    <input id="startDateTime" name="startDateTime" type="datetime-local" value="{{ date('Y-m-d\T00:00') }}" required>
                     &mdash;
-                    <input id="endTime" name="endDateTime" type="datetime-local" value="{{ date('Y-m-d\T00:00') }}" required>
+                    <input id="endDateTime" name="endDateTime" type="datetime-local" value="{{ date('Y-m-d\T00:00') }}" required>
                 </div>
 
                 <button type="submit">Add</button>
@@ -69,6 +79,37 @@
         </form>
     </main>
 
-    <script></script>
+    <script>
+        'use strict';
+
+        const form = document.getElementById('hoursForm');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const client        = document.getElementById('client').value;
+            const rate          = document.getElementById('rate').value;
+            const startDateTime = document.getElementById('startDateTime').value;
+            const endDateTime   = document.getElementById('endDateTime').value;
+            const token         = document.querySelector('meta[name="csrf-token"]').content;
+
+            const body = JSON.stringify({
+                client: client,
+                rate: rate,
+                startDateTime: startDateTime,
+                endDateTime: endDateTime
+            });
+
+            const request = new Request("{{ route('invoices.store') }}", {
+                method: "POST",
+                body: body,
+                headers: new Headers({
+                    'X-CSRF-TOKEN': token
+                })
+            });
+            fetch(request)
+            .then(function(res){ console.log(res) })
+            .catch(function(res){ console.log(res) });
+        });
+    </script>
 </body>
 </html>
