@@ -12,7 +12,7 @@
 </head>
 <body>
     <main class="container">
-        <h1>no longer making time - <a href="https://youtu.be/CMSAELTTgrk" target="_blank" rel="noopener">Slowdive</a></h1>
+        <h1>no longer tracking time - <a href="https://youtu.be/CMSAELTTgrk" target="_blank" rel="noopener">Slowdive</a></h1>
         <hr>
         <table>
             <thead>
@@ -25,17 +25,17 @@
                 </tr>
             </thead>
             <tbody>
+                @foreach ($invoices as $invoice)
                 <tr>
-                    @foreach ($invoices as $invoice)
                     <td>{{ $invoice->client }}</td>
                     <td>&#36;{{ $invoice->rate }}</td>
                     <td><abbr title="{{ $invoice->startDateTime->toDateTimeString() }} &rarr; {{ $invoice->endDateTime->toDateTimeString() }}">
                         {{ $invoice->hours }} hours
                     </abbr></td>
                     <td>&#36;{{ $invoice->owed }}</td>
-                    @endforeach
                     {{-- <td><form action=""><input type="checkbox" name="paid" id="paid"></form></td> --}}
                 </tr>
+                @endforeach
             </tbody>
         </table>
 
