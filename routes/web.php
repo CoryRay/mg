@@ -15,6 +15,4 @@ Route::get('/', function() {
     return redirect('invoices');
 });
 
-Route::resource('invoices', 'InvoiceController', ['only' => [
-    'index', 'store'
-]]);
+Route::resource('invoices', 'InvoiceController', ['only' => ['index', 'store']]);

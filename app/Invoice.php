@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Invoice extends Model
 {
+    protected $guarded = [];
     protected $dates = ['startDateTime', 'endDateTime'];
+    protected $appends = ['hours', 'owed'];
 
     public function getHoursAttribute($value)
     {

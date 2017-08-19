@@ -35,10 +35,7 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        return response()->json([
-            'name' => 'Abigail',
-            'state' => 'CA'
-        ]);
+        return response()->json(Invoice::create($request->toArray()));
     }
 
     /**

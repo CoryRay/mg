@@ -25,7 +25,7 @@
                     {{-- <th>Received</th> --}}
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="table-body">
                 @foreach ($invoices as $invoice)
                 <tr>
                     <td>{{ $invoice->client }}</td>
@@ -51,12 +51,13 @@
             </div>
         @endif
         <form id="hoursForm">
+            {{-- {{ csrf_field() }} --}}
             <fieldset>
                 <legend>Add Hours</legend>
                 <div>
                     <label for="client">Client:</label>
                     <input id="client" name="client" type="text" required>
-            </div>
+                </div>
                 <div>
                     <label for="rate">Rate:</label>
                     <input id="rate" name="rate" type="number" min="1" required>
@@ -68,9 +69,9 @@
 
                 <div>
                     <label for="startTime">Start/End Datetime:</label>
-                    <input id="startDateTime" name="startDateTime" type="datetime-local" value="{{ date('Y-m-d\T00:00') }}" required>
+                    <input id="startDateTime" name="startDateTime" type="datetime-local" value="{{ date('Y-m-d 00:00:00') }}" required>
                     &mdash;
-                    <input id="endDateTime" name="endDateTime" type="datetime-local" value="{{ date('Y-m-d\T00:00') }}" required>
+                    <input id="endDateTime" name="endDateTime" type="datetime-local" value="{{ date('Y-m-d 00:00:00') }}" required>
                 </div>
 
                 <button type="submit">Add</button>
@@ -90,25 +91,42 @@
             const rate          = document.getElementById('rate').value;
             const startDateTime = document.getElementById('startDateTime').value;
             const endDateTime   = document.getElementById('endDateTime').value;
-            const token         = document.querySelector('meta[name="csrf-token"]').content;
+            // const tokenHeader   = document.querySelector('meta[name="csrf-token"]').content;
+            // const token         = document.querySelector('input[name="_token"]').value;
 
             const body = JSON.stringify({
                 client: client,
                 rate: rate,
                 startDateTime: startDateTime,
-                endDateTime: endDateTime
+                endDateTime: endDateTime,
+                _token: '{{ csrf_token() }}'
             });
 
             const request = new Request("{{ route('invoices.store') }}", {
                 method: "POST",
                 body: body,
                 headers: new Headers({
-                    'X-CSRF-TOKEN': token
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    // 'X-CSRF-TOKEN': tokenHeader,
+                    'X-Requested-With': 'XMLHttpRequest',
                 })
             });
             fetch(request)
-            .then(function(res){ console.log(res) })
-            .catch(function(res){ console.log(res) });
+            .then(response => response.json())
+            .then(data => {
+                const table = document.getElementById('table-body');
+
+                const html = `<tr>
+                    <td>${data.client}</td>
+                    <td>&#36;${ data.rate }</td>
+                    <td><abbr title="${ data.startDateTime } &rarr; ${ data.endDateTime }">
+                        ${ data.hours } hours
+                    </abbr></td>
+                    <td>&#36;${ data.owed }</td>
+                </tr>`;
+
+                table.insertAdjacentHTML('beforeend', html);
+            });
         });
     </script>
 </body>

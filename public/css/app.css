@@ -9,6 +9,7 @@ body {
     background-color: #f5f8fa;
     color: #636b6f;
 }
+
 label {
     display: block;
 }
@@ -37,4 +38,3 @@ th, td {
     display: -ms-flexbox;
     display: flex;
 }
-
